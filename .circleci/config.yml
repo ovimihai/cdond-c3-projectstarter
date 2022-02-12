@@ -406,7 +406,7 @@ jobs:
 
   cleanup:
     docker:
-      - image: amazon/aws-cli
+      - image: oviregie/circleci-node-ansible-aws:13.8.0
     steps:
       - checkout
       - run:
