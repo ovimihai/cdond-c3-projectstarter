@@ -205,7 +205,7 @@ jobs:
             rm -fr ~/project/.circleci/ansible/inventory.txt
             cp ~/project/.circleci/ansible/inventory-template.txt ~/project/.circleci/ansible/inventory.txt
             export BACKEND_IP=$(aws ec2 describe-instances \
-              --filters 'Name=tag:Name,Values=backend-*' \
+              --filters 'Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}' \
               --query "Reservations[*].Instances[0].PublicIpAddress" \
               --output text)
              echo $BACKEND_IP >> ~/project/.circleci/ansible/inventory.txt
