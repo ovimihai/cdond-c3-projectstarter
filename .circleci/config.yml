@@ -204,10 +204,11 @@ jobs:
           command: |
             rm -fr ~/project/.circleci/ansible/inventory.txt
             cp ~/project/.circleci/ansible/inventory-template.txt ~/project/.circleci/ansible/inventory.txt
-            export BACKEND_IP=$(aws ec2 describe-instances \
+            export BACKEND_IP=$(eval "aws ec2 describe-instances \
               --filters 'Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}' \
-              --query "Reservations[*].Instances[0].PublicIpAddress" \
-              --output text)
+              --query 'Reservations[*].Instances[0].PublicIpAddress' \
+              --output text")
+
              echo $BACKEND_IP >> ~/project/.circleci/ansible/inventory.txt
             
             echo API_URL="http://${BACKEND_IP}:3030" >> ~/project/frontend/.env
