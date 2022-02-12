@@ -18,7 +18,6 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
-            exit 0
             if aws s3 ls | grep udapeople-<<parameters.workflow_id>>; then
               aws s3 rm s3://udapeople-<<parameters.workflow_id>> --recursive
             fi
@@ -413,38 +412,35 @@ jobs:
       - run:
           name: Get old stack workflow id and Remove old stacks and files
           command: |
-            # your code here
-            # Fetch the Old workflow ID
-            export OldWorkflowID=$(aws cloudformation \
-                    list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
-                    --no-paginate --output text)
-            echo OldWorkflowID: "${OldWorkflowID}"
             echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:7}"
             # Fetch the stack names          
             export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
-                    --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
+                --stack-status-filter CREATE_COMPLETE --no-paginate | jq .[] -r | grep udapeople))
             echo Stack names: "${STACKS[@]}"
             
-            echo OldWorkflowID: "${OldWorkflowID}"
-            echo Stack names: "${STACKS[@]}"
-
-            exit 0
-            if [[ "${CIRCLE_WORKFLOW_ID:0:7}" =~ "${OldWorkflowID}" ]]
-            then
-              if aws s3 ls | grep udapeople-${OldWorkflowID}; then
-                aws s3 rm s3://udapeople-${OldWorkflowID} --recursive
+            for stack in ${STACKS[@]}
+            do
+              echo $stack
+              if [[ "$stack" == *"${CIRCLE_WORKFLOW_ID:0:7}"* ]]; then
+                echo "Current stack"
+              else
+                echo "Stack: $stack"
+                
+                if [[ "$stack" == *"frontend"* ]]; then
+                  echo "is front"
+                  export fragment=frontend-
+                  export bucket="${stack//$fragment/}"
+                  echo "Empty bucket $bucket"
+                  if aws s3 ls | grep $bucket; then
+                    aws s3 rm s3://$bucket --recursive
+                  fi
+                  aws s3api delete-bucket --bucket $bucket
+                fi
+                echo "delete stack $stack"
+                aws cloudformation delete-stack \
+                            --stack-name "$stack"
               fi
-
-              aws s3api delete-bucket --bucket udapeople-${OldWorkflowID}
-
-              aws cloudformation delete-stack \
-                --stack-name "udapeople-backend-${OldWorkflowID}"
-
-              aws cloudformation delete-stack \
-                --stack-name "udapeople-frontend-${OldWorkflowID}"
-            else
-              echo "No old stack"
-            fi
+            done
 
 workflows:
   default:
