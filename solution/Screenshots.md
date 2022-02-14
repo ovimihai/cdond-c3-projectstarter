@@ -43,6 +43,7 @@
 13. Provide a screenshot showing the evidence of deployed and functioning front-end application in CloudFront (aka, your production front-end).
 [URL03_SCREENSHOT]
 ![](media/13_cloudfront.png)
+![](media/13_bucket.png)
 14. Provide a screenshot showing the evidence of a healthy backend application. The backend endpoint status should show a healthy response.
 [URL04_SCREENSHOT]
 ![](media/14_backend.png)
