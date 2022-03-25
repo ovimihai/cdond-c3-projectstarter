@@ -1,6 +1,6 @@
-[![CircleCI](https://circleci.com/gh/ovimihai/cdond-c3-projectstarter/tree/master.svg?style=svg)](https://circleci.com/gh/ovimihai/cdond-c3-projectstarter/tree/master)
+# Udacity Cloud DevOps Nanodegree Project 4
 
-Udacity Cloud DevOps Nanodegree Project 4
+[![CircleCI](https://circleci.com/gh/ovimihai/cdond-c3-projectstarter/tree/master.svg?style=svg)](https://circleci.com/gh/ovimihai/cdond-c3-projectstarter/tree/master) because the infrastructure is stopped
 
 [Solution](solution/Screenshots.md)
 
